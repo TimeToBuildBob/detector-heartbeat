@@ -1,0 +1,22 @@
+name: Detector Heartbeat
+description: Fail CI when detector execution evidence is missing, stale, malformed, or partial
+author: Bob
+inputs:
+  path:
+    description: Path to the detector heartbeat JSON file
+    required: true
+  max-age-seconds:
+    description: Maximum allowed age of the last fully successful run
+    required: false
+    default: "172800"
+outputs:
+  last-run:
+    description: ISO timestamp of the validated run
+  age-seconds:
+    description: Age of the validated run in whole seconds
+runs:
+  using: node24
+  main: dist/index.js
+branding:
+  icon: activity
+  color: green

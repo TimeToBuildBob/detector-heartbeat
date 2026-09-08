@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run package
+      - name: Verify committed bundle
+        run: git diff --exit-code -- dist/
+
+  action-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create current heartbeat
+        run: |
+          mkdir -p "$RUNNER_TEMP/heartbeat"
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          printf '{"check":"ci-smoke","last_run":"%s","last_all_success":"%s","failed_detectors":[]}\n' \
+            "$NOW" "$NOW" > "$RUNNER_TEMP/heartbeat/status.json"
+      - uses: ./
+        with:
+          path: ${{ runner.temp }}/heartbeat/status.json
+          max-age-seconds: "60"

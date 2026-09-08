@@ -1,0 +1,22 @@
+{
+  "name": "detector-heartbeat-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fail CI when a detector heartbeat is missing, stale, malformed, or reports partial failure.",
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/index.js && node --check src/heartbeat.js",
+    "package": "ncc build src/index.js --minify --source-map",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.4"
+  },
+  "license": "MIT"
+}
